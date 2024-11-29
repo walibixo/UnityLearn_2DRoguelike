@@ -20,15 +20,20 @@ public class BoardManager : MonoBehaviour
     private CellData[,] _cellsData;
 
     private Tilemap _tilemap;
+    private Grid _grid;
+    private PlayerController _playerController;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         _tilemap = GetComponentInChildren<Tilemap>();
+        _grid = GetComponentInChildren<Grid>();
+        _playerController = FindFirstObjectByType<PlayerController>();
+
         _cellsData = new CellData[_width, _height];
 
         SetGroundTiles();
-        SetWallTiles();
+        _playerController.Spawn(1, 1);
     }
 
     // Update is called once per frame
@@ -37,39 +42,42 @@ public class BoardManager : MonoBehaviour
 
     }
 
+    public Vector3 CellToWorld(Vector2Int cellIndex)
+    {
+        return _grid.GetCellCenterWorld((Vector3Int)cellIndex);
+    }
+
+    public bool IsPassable(Vector2Int position)
+    {
+        if (position.x < 0 || position.x >= _width
+            || position.y < 0 || position.y >= _height)
+        {
+            return false;
+        }
+
+        return _cellsData[position.x, position.y].Passable;
+    }
+
     private void SetGroundTiles()
     {
         for (int y = 0; y < _height; ++y)
         {
             for (int x = 0; x < _width; ++x)
             {
+                // Border tiles are walls
+                if (x == 0 || x == _width - 1 || y == 0 || y == _height - 1)
+                {
+                    _tilemap.SetTile(new Vector3Int(x, y, 0), GetWallTile());
+                    SetCellData(x, y, false);
+                    continue;
+                }
+
                 _tilemap.SetTile(new Vector3Int(x, y, 0), GetGroundTile());
                 SetCellData(x, y, true);
             }
         }
     }
     private Tile GetGroundTile() => _groundTiles[Random.Range(0, _groundTiles.Length)];
-
-    private void SetWallTiles()
-    {
-        for (int x = 0; x < _width; ++x)
-        {
-            _tilemap.SetTile(new Vector3Int(x, 0, 0), GetWallTile());
-            SetCellData(x, 0, false);
-
-            _tilemap.SetTile(new Vector3Int(x, _height - 1, 0), GetWallTile());
-            SetCellData(x, _height - 1, false);
-        }
-
-        for (int y = 0; y < _height; ++y)
-        {
-            _tilemap.SetTile(new Vector3Int(0, y, 0), GetWallTile());
-            SetCellData(0, y, false);
-
-            _tilemap.SetTile(new Vector3Int(_width - 1, y, 0), GetWallTile());
-            SetCellData(_width - 1, y, false);
-        }
-    }
 
     private Tile GetWallTile() => _wallTiles[Random.Range(0, _wallTiles.Length)];
 
