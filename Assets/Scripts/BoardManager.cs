@@ -21,25 +21,18 @@ public class BoardManager : MonoBehaviour
 
     private Tilemap _tilemap;
     private Grid _grid;
-    private PlayerController _playerController;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
         _tilemap = GetComponentInChildren<Tilemap>();
         _grid = GetComponentInChildren<Grid>();
-        _playerController = FindFirstObjectByType<PlayerController>();
+    }
 
+    public void GenerateBoard()
+    {
         _cellsData = new CellData[_width, _height];
 
         SetGroundTiles();
-        _playerController.Spawn(1, 1);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     public Vector3 CellToWorld(Vector2Int cellIndex)

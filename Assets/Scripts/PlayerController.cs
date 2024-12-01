@@ -6,13 +6,11 @@ public class PlayerController : MonoBehaviour
 
     private BoardManager _boardManager;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
         _boardManager = FindFirstObjectByType<BoardManager>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.W))
@@ -44,6 +42,7 @@ public class PlayerController : MonoBehaviour
 
         if (_boardManager.IsPassable(newPosition))
         {
+            GameManager.Instance.TurnManager.Tick();
             SetPosition(newPosition);
         }
     }
