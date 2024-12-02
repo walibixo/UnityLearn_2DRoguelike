@@ -651,7 +651,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 721ce28b42aced6478d9304bc6228f89, type: 2}
   - {fileID: 11400000, guid: bfa22a7ec87b16841993ea5f7f8e19f5, type: 2}
   - {fileID: 11400000, guid: b424c1eb80ccdaa459790721fcdb6a77, type: 2}
-  _foodPrefab: {fileID: 8931258989061484236, guid: 8fe118bca6ed54e4593ebcda9145d5de, type: 3}
+  _foodPrefabs:
+  - {fileID: 8931258989061484236, guid: 8fe118bca6ed54e4593ebcda9145d5de, type: 3}
+  - {fileID: 8772516550532754811, guid: 9d684c9494c21e84ca312e0b51343024, type: 3}
+  _foodAmountMin: 3
+  _foodAmountMax: 5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

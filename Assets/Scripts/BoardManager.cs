@@ -7,14 +7,15 @@ public class BoardManager : MonoBehaviour
 {
     public static readonly Vector2Int PlayerStart = new(1, 1);
 
-    public const int FoodAmount = 5;
-
     [SerializeField] private int _width;
     [SerializeField] private int _height;
 
     [SerializeField] private Tile[] _groundTiles;
     [SerializeField] private Tile[] _wallTiles;
-    [SerializeField] private GameObject _foodPrefab;
+
+    [SerializeField] private GameObject[] _foodPrefabs;
+    [SerializeField] private int _foodAmountMin;
+    [SerializeField] private int _foodAmountMax;
 
     public record CellData
     {
@@ -112,13 +113,16 @@ public class BoardManager : MonoBehaviour
 
     private void SetFoodTiles()
     {
-        for (int i = 0; i < FoodAmount; ++i)
+        int foodAmount = Random.Range(_foodAmountMin, _foodAmountMax + 1);
+        for (int i = 0; i < foodAmount; ++i)
         {
             Vector2Int position = _emptyCells[Random.Range(0, _emptyCells.Count)];
             _emptyCells.Remove(position);
 
-            GameObject food = Instantiate(_foodPrefab, CellToWorld(position), Quaternion.identity);
+            GameObject food = Instantiate(GetFoodPrefab(), CellToWorld(position), Quaternion.identity);
             SetCellData(position.x, position.y, true, food);
         }
     }
+
+    private GameObject GetFoodPrefab() => _foodPrefabs[Random.Range(0, _foodPrefabs.Length)];
 }
