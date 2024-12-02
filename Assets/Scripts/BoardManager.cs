@@ -1,23 +1,35 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
 public class BoardManager : MonoBehaviour
 {
+    public static readonly Vector2Int PlayerStart = new(1, 1);
+
+    public const int FoodAmount = 5;
+
     [SerializeField] private int _width;
     [SerializeField] private int _height;
 
     [SerializeField] private Tile[] _groundTiles;
     [SerializeField] private Tile[] _wallTiles;
+    [SerializeField] private GameObject _foodPrefab;
 
     public record CellData
     {
         public bool Passable;
+        public GameObject ContainedObject;
 
-        public CellData(bool passable) => Passable = passable;
+        public CellData(bool passable, GameObject containedObject = null)
+        {
+            Passable = passable;
+            ContainedObject = containedObject;
+        }
     }
 
     private CellData[,] _cellsData;
+    private List<Vector2Int> _emptyCells;
 
     private Tilemap _tilemap;
     private Grid _grid;
@@ -31,8 +43,10 @@ public class BoardManager : MonoBehaviour
     public void GenerateBoard()
     {
         _cellsData = new CellData[_width, _height];
+        _emptyCells = new List<Vector2Int>();
 
         SetGroundTiles();
+        SetFoodTiles();
     }
 
     public Vector3 CellToWorld(Vector2Int cellIndex)
@@ -42,13 +56,25 @@ public class BoardManager : MonoBehaviour
 
     public bool IsPassable(Vector2Int position)
     {
+        var cellData = GetCellData(position);
+        return cellData != null && cellData.Passable;
+    }
+
+    public GameObject GetObject(Vector2Int position)
+    {
+        var cellData = GetCellData(position);
+        return cellData != null ? cellData.ContainedObject : null;
+    }
+
+    private CellData GetCellData(Vector2Int position)
+    {
         if (position.x < 0 || position.x >= _width
             || position.y < 0 || position.y >= _height)
         {
-            return false;
+            return null;
         }
 
-        return _cellsData[position.x, position.y].Passable;
+        return _cellsData[position.x, position.y];
     }
 
     private void SetGroundTiles()
@@ -67,15 +93,32 @@ public class BoardManager : MonoBehaviour
 
                 _tilemap.SetTile(new Vector3Int(x, y, 0), GetGroundTile());
                 SetCellData(x, y, true);
+
+                _emptyCells.Add(new Vector2Int(x, y));
             }
         }
+
+        _emptyCells.Remove(PlayerStart);
     }
+
     private Tile GetGroundTile() => _groundTiles[Random.Range(0, _groundTiles.Length)];
 
     private Tile GetWallTile() => _wallTiles[Random.Range(0, _wallTiles.Length)];
 
-    private void SetCellData(int x, int y, bool isPassable)
+    private void SetCellData(int x, int y, bool isPassable, GameObject containedObject = null)
     {
-        _cellsData[x, y] = new CellData(isPassable);
+        _cellsData[x, y] = new CellData(isPassable, containedObject);
+    }
+
+    private void SetFoodTiles()
+    {
+        for (int i = 0; i < FoodAmount; ++i)
+        {
+            Vector2Int position = _emptyCells[Random.Range(0, _emptyCells.Count)];
+            _emptyCells.Remove(position);
+
+            GameObject food = Instantiate(_foodPrefab, CellToWorld(position), Quaternion.identity);
+            SetCellData(position.x, position.y, true, food);
+        }
     }
 }

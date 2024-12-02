@@ -31,9 +31,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void Spawn(int x, int y)
+    public void Spawn(Vector2Int position)
     {
-        SetPosition(new Vector2Int(x, y));
+        SetPosition(position);
     }
 
     private void TryMove(Vector2Int direction)

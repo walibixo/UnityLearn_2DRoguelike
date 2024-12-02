@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
 
         _boardManager.GenerateBoard();
 
-        _playerController.Spawn(1, 1);
+        _playerController.Spawn(BoardManager.PlayerStart);
 
         UpdateFoodAmount(100);
     }
