@@ -660,6 +660,7 @@ MonoBehaviour:
   - {fileID: 5007473883255699070, guid: fe079043f6eddd148a44d59abff2643e, type: 3}
   _wallAmountMin: 3
   _wallAmountMax: 5
+  _exitCellPrefab: {fileID: 161206099135200251, guid: 95fcdb9e0131c5f4ca2b8b58e674ad37, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

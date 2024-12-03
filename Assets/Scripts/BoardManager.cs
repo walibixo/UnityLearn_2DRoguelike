@@ -15,15 +15,18 @@ public class BoardManager : MonoBehaviour
     [SerializeField] private Tile[] _groundTiles;
     [SerializeField] private Tile[] _borderTiles;
 
-    [Header("Food Tiles")]
+    [Header("Food Objects")]
     [SerializeField] private FoodObject[] _foodPrefabs;
     [SerializeField] private int _foodAmountMin;
     [SerializeField] private int _foodAmountMax;
 
-    [Header("Wall Tiles")]
+    [Header("Wall Objects")]
     [SerializeField] private WallObject[] _wallPrefabs;
     [SerializeField] private int _wallAmountMin;
     [SerializeField] private int _wallAmountMax;
+
+    [Header("Exit Object")]
+    [SerializeField] private ExitCellObject _exitCellPrefab;
 
     public record CellData
     {
@@ -47,16 +50,36 @@ public class BoardManager : MonoBehaviour
     {
         _tilemap = GetComponentInChildren<Tilemap>();
         _grid = GetComponentInChildren<Grid>();
+
+        _cellsData = new CellData[_width, _height];
+        _emptyCells = new List<Vector2Int>();
     }
 
     public void GenerateBoard()
     {
-        _cellsData = new CellData[_width, _height];
-        _emptyCells = new List<Vector2Int>();
-
         SetGroundTiles();
-        SetFoodTiles();
-        SetWallTiles();
+        SetExitObject();
+        SetFoodObjects();
+        SetWallObjects();
+    }
+
+    public void ClearBoard()
+    {
+        _emptyCells.Clear();
+
+        for (int y = 0; y < _height; ++y)
+        {
+            for (int x = 0; x < _width; ++x)
+            {
+                CellData cellData = _cellsData[x, y];
+                if (cellData != null && cellData.ContainedObject != null)
+                {
+                    Destroy(cellData.ContainedObject.gameObject);
+                }
+
+                SetCellTile(x, y, null);
+            }
+        }
     }
 
     public Vector3 CellToWorld(Vector2Int cellIndex)
@@ -130,37 +153,47 @@ public class BoardManager : MonoBehaviour
         _cellsData[x, y] = new CellData(isPassable, containedObject);
     }
 
-    private void SetFoodTiles()
+    private void SetFoodObjects()
     {
         int foodAmount = Random.Range(_foodAmountMin, _foodAmountMax + 1);
         for (int i = 0; i < foodAmount; ++i)
         {
-            Vector2Int position = _emptyCells[Random.Range(0, _emptyCells.Count)];
-            _emptyCells.Remove(position);
-
-            FoodObject food = Instantiate(GetFoodPrefab(), CellToWorld(position), Quaternion.identity);
-            food.Init(position);
-
-            SetCellData(position.x, position.y, true, food);
+            SetObject(GetFoodPrefab());
         }
     }
 
     private FoodObject GetFoodPrefab() => _foodPrefabs[Random.Range(0, _foodPrefabs.Length)];
 
-    private void SetWallTiles()
+    private void SetWallObjects()
     {
         int wallAmount = Random.Range(_wallAmountMin, _wallAmountMax + 1);
         for (int i = 0; i < wallAmount; ++i)
         {
-            Vector2Int position = _emptyCells[Random.Range(0, _emptyCells.Count)];
-            _emptyCells.Remove(position);
-
-            WallObject wall = Instantiate(GetWallPrefab(), CellToWorld(position), Quaternion.identity);
-            wall.Init(position);
-
-            SetCellData(position.x, position.y, true, wall);
+            SetObject(GetWallPrefab());
         }
     }
 
     private WallObject GetWallPrefab() => _wallPrefabs[Random.Range(0, _wallPrefabs.Length)];
+
+    private void SetObject<T>(T prefab) where T : CellObject
+    {
+        Vector2Int position = _emptyCells[Random.Range(0, _emptyCells.Count)];
+        SetObject(prefab, position);
+    }
+
+    private void SetObject<T>(T prefab, Vector2Int position) where T : CellObject
+    {
+        _emptyCells.Remove(position);
+
+        T cellObject = Instantiate(prefab, CellToWorld(position), Quaternion.identity);
+        cellObject.Init(position);
+
+        SetCellData(position.x, position.y, true, cellObject);
+    }
+
+    private void SetExitObject()
+    {
+        Vector2Int position = new Vector2Int(_width - 2, _height - 2);
+        SetObject(_exitCellPrefab, position);
+    }
 }

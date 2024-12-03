@@ -13,6 +13,9 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.Instance.IsGameOver)
+            return;
+
         if (Input.GetKeyDown(KeyCode.W))
         {
             TryMove(Vector2Int.up);

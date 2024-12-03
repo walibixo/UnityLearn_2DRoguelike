@@ -12,6 +12,9 @@ public class GameManager : MonoBehaviour
     public BoardManager BoardManager { get; private set; }
     public TurnManager TurnManager { get; private set; }
 
+    public bool IsGameOver { get; private set; }
+
+    private int _levelCount;
     private int _foodAmount;
 
     void Awake()
@@ -35,11 +38,25 @@ public class GameManager : MonoBehaviour
         TurnManager = new TurnManager();
         TurnManager.OnTick += OnNewTurn;
 
+        UpdateFoodAmount(100);
+
+        StartNewLevel();
+    }
+
+    public void StartNewLevel()
+    {
+        _levelCount++;
+
+        BoardManager.ClearBoard();
         BoardManager.GenerateBoard();
 
         _playerController.Spawn(BoardManager.PlayerStart);
+    }
 
-        UpdateFoodAmount(100);
+    public void GameOver()
+    {
+        IsGameOver = true;
+        Debug.Log("Game Over");
     }
 
     private void OnNewTurn()
@@ -47,6 +64,10 @@ public class GameManager : MonoBehaviour
         if (_foodAmount > 0)
         {
             UpdateFoodAmount(-1);
+        }
+        else
+        {
+            GameOver();
         }
     }
 
