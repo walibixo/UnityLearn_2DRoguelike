@@ -40,10 +40,18 @@ public class PlayerController : MonoBehaviour
     {
         Vector2Int newPosition = _cellPosition + direction;
 
-        if (_boardManager.IsPassable(newPosition))
+        if (!_boardManager.IsPassable(newPosition))
         {
-            GameManager.Instance.TurnManager.Tick();
-            SetPosition(newPosition);
+            return;
+        }
+
+        GameManager.Instance.TurnManager.Tick();
+        SetPosition(newPosition);
+
+        var cellObject = _boardManager.GetObject(newPosition);
+        if (cellObject != null)
+        {
+            cellObject.PlayerEntered();
         }
     }
 

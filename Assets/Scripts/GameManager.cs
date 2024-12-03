@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void UpdateFoodAmount(int relativeAmount = 0)
+    public void UpdateFoodAmount(int relativeAmount = 0)
     {
         _foodAmount += relativeAmount;
         _foodLabel.text = "Food : " + _foodAmount;

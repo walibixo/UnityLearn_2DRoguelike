@@ -13,16 +13,16 @@ public class BoardManager : MonoBehaviour
     [SerializeField] private Tile[] _groundTiles;
     [SerializeField] private Tile[] _wallTiles;
 
-    [SerializeField] private GameObject[] _foodPrefabs;
+    [SerializeField] private FoodObject[] _foodPrefabs;
     [SerializeField] private int _foodAmountMin;
     [SerializeField] private int _foodAmountMax;
 
     public record CellData
     {
         public bool Passable;
-        public GameObject ContainedObject;
+        public CellObject ContainedObject;
 
-        public CellData(bool passable, GameObject containedObject = null)
+        public CellData(bool passable, CellObject containedObject = null)
         {
             Passable = passable;
             ContainedObject = containedObject;
@@ -61,7 +61,7 @@ public class BoardManager : MonoBehaviour
         return cellData != null && cellData.Passable;
     }
 
-    public GameObject GetObject(Vector2Int position)
+    public CellObject GetObject(Vector2Int position)
     {
         var cellData = GetCellData(position);
         return cellData != null ? cellData.ContainedObject : null;
@@ -106,7 +106,7 @@ public class BoardManager : MonoBehaviour
 
     private Tile GetWallTile() => _wallTiles[Random.Range(0, _wallTiles.Length)];
 
-    private void SetCellData(int x, int y, bool isPassable, GameObject containedObject = null)
+    private void SetCellData(int x, int y, bool isPassable, CellObject containedObject = null)
     {
         _cellsData[x, y] = new CellData(isPassable, containedObject);
     }
@@ -119,10 +119,10 @@ public class BoardManager : MonoBehaviour
             Vector2Int position = _emptyCells[Random.Range(0, _emptyCells.Count)];
             _emptyCells.Remove(position);
 
-            GameObject food = Instantiate(GetFoodPrefab(), CellToWorld(position), Quaternion.identity);
+            FoodObject food = Instantiate(GetFoodPrefab(), CellToWorld(position), Quaternion.identity);
             SetCellData(position.x, position.y, true, food);
         }
     }
 
-    private GameObject GetFoodPrefab() => _foodPrefabs[Random.Range(0, _foodPrefabs.Length)];
+    private FoodObject GetFoodPrefab() => _foodPrefabs[Random.Range(0, _foodPrefabs.Length)];
 }

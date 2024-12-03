@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4391731155187329365}
   - component: {fileID: 8595473640967401943}
+  - component: {fileID: 4563883464927458577}
   m_Layer: 0
-  m_Name: SmallFood1
+  m_Name: BigFood
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -87,3 +88,16 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &4563883464927458577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8931258989061484236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95d0631486cf04b4cb0e89f5ef5cf57d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _foodAmount: 5
