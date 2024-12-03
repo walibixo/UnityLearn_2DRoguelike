@@ -643,19 +643,23 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5837b31b8f39a1040a55d0baf79d007e, type: 2}
   - {fileID: 11400000, guid: 9eb04db46efa5e344b5771790f6002bf, type: 2}
   - {fileID: 11400000, guid: d2238c660fcbccf45986778e57574ca6, type: 2}
-  _wallTiles:
-  - {fileID: 11400000, guid: e39c8eefa98b75f4c92997a37dc213e7, type: 2}
-  - {fileID: 11400000, guid: 3152384167f02e947bc24620f1c9538e, type: 2}
-  - {fileID: 11400000, guid: 66bd130005b685b4fab9306a67b11760, type: 2}
-  - {fileID: 11400000, guid: 95961ba918beddd40b32105db773caf0, type: 2}
-  - {fileID: 11400000, guid: 721ce28b42aced6478d9304bc6228f89, type: 2}
-  - {fileID: 11400000, guid: bfa22a7ec87b16841993ea5f7f8e19f5, type: 2}
-  - {fileID: 11400000, guid: b424c1eb80ccdaa459790721fcdb6a77, type: 2}
+  _borderTiles:
+  - {fileID: 11400000, guid: 7af9965ac490a0f4d95e3607164e68cf, type: 2}
+  - {fileID: 11400000, guid: 6f01c877248b93747a0bd029af6d16be, type: 2}
+  - {fileID: 11400000, guid: 17b7fc676f2b4b644a30921b10e867be, type: 2}
+  - {fileID: 11400000, guid: 71a86e1e65840ac4293f2d0723559f40, type: 2}
+  - {fileID: 11400000, guid: bca919fe987854143ba5f2dc2d81f2f2, type: 2}
   _foodPrefabs:
   - {fileID: 4563883464927458577, guid: 8fe118bca6ed54e4593ebcda9145d5de, type: 3}
   - {fileID: 5946154978750719017, guid: 9d684c9494c21e84ca312e0b51343024, type: 3}
   _foodAmountMin: 3
   _foodAmountMax: 5
+  _wallPrefabs:
+  - {fileID: 5007473883255699070, guid: 0db76e6b560914a41bce62cb604613e1, type: 3}
+  - {fileID: 5007473883255699070, guid: 9e5dc45b47ed4e24db9218d1646b4f74, type: 3}
+  - {fileID: 5007473883255699070, guid: fe079043f6eddd148a44d59abff2643e, type: 3}
+  _wallAmountMin: 3
+  _wallAmountMax: 5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

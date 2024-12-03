@@ -46,11 +46,15 @@ public class PlayerController : MonoBehaviour
         }
 
         GameManager.Instance.TurnManager.Tick();
-        SetPosition(newPosition);
 
         var cellObject = _boardManager.GetObject(newPosition);
-        if (cellObject != null)
+        if (cellObject == null)
         {
+            SetPosition(newPosition);
+        }
+        else if (cellObject.PlayerTryEnter())
+        {
+            SetPosition(newPosition);
             cellObject.PlayerEntered();
         }
     }
