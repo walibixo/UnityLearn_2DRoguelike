@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
     private PlayerController _playerController;
     private UIDocument _uiDocument;
     private Label _foodLabel;
+    private VisualElement _gameOverPanel;
+    private Label _gameOverLabel;
 
     public BoardManager BoardManager { get; private set; }
     public TurnManager TurnManager { get; private set; }
@@ -34,9 +36,22 @@ public class GameManager : MonoBehaviour
         BoardManager = FindFirstObjectByType<BoardManager>();
         _uiDocument = FindFirstObjectByType<UIDocument>();
         _foodLabel = _uiDocument.rootVisualElement.Q<Label>("FoodLabel");
+        _gameOverPanel = _uiDocument.rootVisualElement.Q<VisualElement>("GameOverPanel");
+        _gameOverLabel = _gameOverPanel.Q<Label>("GameOverLabel");
 
         TurnManager = new TurnManager();
         TurnManager.OnTick += OnNewTurn;
+
+        StartNewGame();
+    }
+
+    public void StartNewGame()
+    {
+        _levelCount = 0;
+        _foodAmount = 0;
+        IsGameOver = false;
+
+        _gameOverPanel.style.visibility = Visibility.Hidden;
 
         UpdateFoodAmount(100);
 
@@ -56,7 +71,8 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         IsGameOver = true;
-        Debug.Log("Game Over");
+        _gameOverPanel.style.visibility = Visibility.Visible;
+        _gameOverLabel.text = "Game Over!\n\nYou traveled through " + _levelCount + " levels\n\nPress Space to start again";
     }
 
     private void OnNewTurn()

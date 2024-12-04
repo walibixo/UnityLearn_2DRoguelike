@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class TurnManager
 {
     public event System.Action OnTick;
@@ -15,7 +13,5 @@ public class TurnManager
     {
         _turnCount += 1;
         OnTick?.Invoke();
-
-        Debug.Log("Current turn count : " + _turnCount);
     }
 }

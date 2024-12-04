@@ -14,7 +14,14 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         if (GameManager.Instance.IsGameOver)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                GameManager.Instance.StartNewGame();
+            }
+
             return;
+        }
 
         if (Input.GetKeyDown(KeyCode.W))
         {
