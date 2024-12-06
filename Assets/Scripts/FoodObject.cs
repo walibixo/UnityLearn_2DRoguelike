@@ -4,7 +4,7 @@ public class FoodObject : CellObject
 {
     [SerializeField] private int _foodAmount;
 
-    public override void PlayerEntered()
+    public override void PlayerEntered(PlayerController playerController)
     {
         Destroy(gameObject);
 

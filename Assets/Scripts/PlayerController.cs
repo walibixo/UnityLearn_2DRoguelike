@@ -3,18 +3,26 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    private static readonly int IsMovingHash = Animator.StringToHash("IsMoving");
+    private static readonly int AttacksHash = Animator.StringToHash("Attacks");
+
     [SerializeField] private float _moveDuration;
+    [SerializeField] private float _attackDuration;
+
+    private BoardManager _boardManager;
+    private Animator _animator;
 
     private Vector2Int _currentCellPosition;
     private bool _isMoving;
+    private bool _isAttacking;
 
     private Coroutine _moveCoroutine;
-
-    private BoardManager _boardManager;
+    private Coroutine _attackCoroutine;
 
     void Awake()
     {
         _boardManager = FindFirstObjectByType<BoardManager>();
+        _animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -29,7 +37,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        if (_isMoving)
+        if (_isMoving || _isAttacking)
         {
             return;
         }
@@ -57,6 +65,15 @@ public class PlayerController : MonoBehaviour
         SetPosition(position, true);
     }
 
+    public void Attack()
+    {
+        if (_attackCoroutine != null)
+        {
+            StopCoroutine(_attackCoroutine);
+        }
+        _attackCoroutine = StartCoroutine(AttackCoroutine());
+    }
+
     private void TryMove(Vector2Int direction)
     {
         Vector2Int newPosition = _currentCellPosition + direction;
@@ -73,7 +90,7 @@ public class PlayerController : MonoBehaviour
         {
             SetPosition(newPosition);
         }
-        else if (cellObject.PlayerTryEnter())
+        else if (cellObject.PlayerTryEnter(this))
         {
             SetPosition(newPosition);
         }
@@ -86,12 +103,13 @@ public class PlayerController : MonoBehaviour
             StopCoroutine(_moveCoroutine);
         }
 
-        _moveCoroutine = StartCoroutine(Move(position, immediate));
+        _moveCoroutine = StartCoroutine(MoveCoroutine(position, immediate));
     }
 
-    private IEnumerator Move(Vector2Int position, bool immediate = false)
+    private IEnumerator MoveCoroutine(Vector2Int position, bool immediate = false)
     {
         _isMoving = true;
+        _animator.SetBool(IsMovingHash, true);
 
         if (!immediate && _moveDuration > 0)
         {
@@ -111,11 +129,22 @@ public class PlayerController : MonoBehaviour
         _currentCellPosition = position;
 
         _isMoving = false;
+        _animator.SetBool(IsMovingHash, false);
 
         var cellObject = _boardManager.GetObject(position);
         if (cellObject != null)
         {
-            cellObject.PlayerEntered();
+            cellObject.PlayerEntered(this);
         }
+    }
+
+    private IEnumerator AttackCoroutine()
+    {
+        _isAttacking = true;
+
+        _animator.SetTrigger(AttacksHash);
+        yield return new WaitForSeconds(_attackDuration);
+
+        _isAttacking = false;
     }
 }
