@@ -25,6 +25,11 @@ public class BoardManager : MonoBehaviour
     [SerializeField] private int _wallAmountMin;
     [SerializeField] private int _wallAmountMax;
 
+    [Header("EnemyObjects")]
+    [SerializeField] private EnemyObject[] _enemyPrefabs;
+    [SerializeField] private int _enemyAmountMin;
+    [SerializeField] private int _enemyAmountMax;
+
     [Header("Exit Object")]
     [SerializeField] private ExitCellObject _exitCellPrefab;
 
@@ -61,6 +66,7 @@ public class BoardManager : MonoBehaviour
         SetExitObject();
         SetFoodObjects();
         SetWallObjects();
+        SetEnemyObjects();
     }
 
     public void ClearBoard()
@@ -174,6 +180,17 @@ public class BoardManager : MonoBehaviour
     }
 
     private WallObject GetWallPrefab() => _wallPrefabs[Random.Range(0, _wallPrefabs.Length)];
+
+    private void SetEnemyObjects()
+    {
+        int enemyAmount = Random.Range(_enemyAmountMin, _enemyAmountMax + 1);
+        for (int i = 0; i < enemyAmount; ++i)
+        {
+            SetObject(GetEnemyPrefab());
+        }
+    }
+
+    private EnemyObject GetEnemyPrefab() => _enemyPrefabs[Random.Range(0, _enemyPrefabs.Length)];
 
     private void SetObject<T>(T prefab) where T : CellObject
     {
