@@ -52,10 +52,12 @@ public class PlayerController : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.A))
         {
+            FlipSprite(true);
             TryMove(Vector2Int.left);
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
+            FlipSprite(false);
             TryMove(Vector2Int.right);
         }
     }
@@ -146,5 +148,12 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(_attackDuration);
 
         _isAttacking = false;
+    }
+
+    private void FlipSprite(bool flip)
+    {
+        Vector3 scale = transform.localScale;
+        scale.x = flip ? -1 : 1;
+        transform.localScale = scale;
     }
 }
