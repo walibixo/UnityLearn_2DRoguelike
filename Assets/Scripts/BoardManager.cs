@@ -109,10 +109,29 @@ public class BoardManager : MonoBehaviour
         return cellData != null && cellData.Passable;
     }
 
+    public bool IsEmpty(Vector2Int position)
+    {
+        var cellData = GetCellData(position);
+        return cellData != null && cellData.Passable && cellData.ContainedObject == null;
+    }
+
     public CellObject GetObject(Vector2Int position)
     {
         var cellData = GetCellData(position);
         return cellData != null ? cellData.ContainedObject : null;
+    }
+
+    public void MoveObject(Vector2Int from, Vector2Int to)
+    {
+        var fromData = GetCellData(from);
+        var toData = GetCellData(to);
+        if (fromData == null || toData == null)
+        {
+            return;
+        }
+
+        toData.ContainedObject = fromData.ContainedObject;
+        fromData.ContainedObject = null;
     }
 
     private CellData GetCellData(Vector2Int position)

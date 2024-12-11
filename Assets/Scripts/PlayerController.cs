@@ -6,13 +6,14 @@ public class PlayerController : MonoBehaviour
     private static readonly int IsMovingHash = Animator.StringToHash("IsMoving");
     private static readonly int AttacksHash = Animator.StringToHash("Attacks");
 
+    public Vector2Int CellPosition { get; private set; }
+
     [SerializeField] private float _moveDuration;
     [SerializeField] private float _attackDuration;
 
     private BoardManager _boardManager;
     private Animator _animator;
 
-    private Vector2Int _currentCellPosition;
     private bool _isMoving;
     private bool _isAttacking;
 
@@ -78,7 +79,7 @@ public class PlayerController : MonoBehaviour
 
     private void TryMove(Vector2Int direction)
     {
-        Vector2Int newPosition = _currentCellPosition + direction;
+        Vector2Int newPosition = CellPosition + direction;
 
         if (!_boardManager.IsPassable(newPosition))
         {
@@ -128,7 +129,7 @@ public class PlayerController : MonoBehaviour
         }
 
         transform.position = _boardManager.CellToWorld(position);
-        _currentCellPosition = position;
+        CellPosition = position;
 
         _isMoving = false;
         _animator.SetBool(IsMovingHash, false);

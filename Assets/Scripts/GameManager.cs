@@ -5,12 +5,12 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    private PlayerController _playerController;
     private UIDocument _uiDocument;
     private Label _foodLabel;
     private VisualElement _gameOverPanel;
     private Label _gameOverLabel;
 
+    public PlayerController PlayerController { get; private set; }
     public BoardManager BoardManager { get; private set; }
     public TurnManager TurnManager { get; private set; }
 
@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        _playerController = FindFirstObjectByType<PlayerController>();
+        PlayerController = FindFirstObjectByType<PlayerController>();
         BoardManager = FindFirstObjectByType<BoardManager>();
         _uiDocument = FindFirstObjectByType<UIDocument>();
         _foodLabel = _uiDocument.rootVisualElement.Q<Label>("FoodLabel");
@@ -65,7 +65,7 @@ public class GameManager : MonoBehaviour
         BoardManager.ClearBoard();
         BoardManager.GenerateBoard();
 
-        _playerController.Spawn(BoardManager.PlayerStart);
+        PlayerController.Spawn(BoardManager.PlayerStart);
     }
 
     public void GameOver()
