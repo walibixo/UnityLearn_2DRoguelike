@@ -1,12 +1,31 @@
+using System.Collections;
 using UnityEngine;
 
 public class EnemyObject : CellObject
 {
+    private static readonly int IsMovingHash = Animator.StringToHash("IsMoving");
+    private static readonly int AttacksHash = Animator.StringToHash("Attacks");
+    private static readonly int IsHurtHash = Animator.StringToHash("IsHurt");
+
     [SerializeField] private int _enemyHitPoints;
 
-    public override void Init(Vector2Int cell)
+    [SerializeField] private float _moveDuration;
+    [SerializeField] private float _attackDuration;
+    [SerializeField] private float _hurtDuration;
+
+    private bool _isMoving;
+    private bool _isAttacking;
+    private bool _isHurting;
+
+    private Coroutine _moveCoroutine;
+    private Coroutine _attackCoroutine;
+    private Coroutine _hurtCoroutine;
+
+    private Animator _animator;
+
+    private void Awake()
     {
-        base.Init(cell);
+        _animator = GetComponent<Animator>();
 
         GameManager.Instance.TurnManager.OnTick += OnNewTurn;
     }
@@ -16,16 +35,37 @@ public class EnemyObject : CellObject
         GameManager.Instance.TurnManager.OnTick -= OnNewTurn;
     }
 
+    public override void Init(Vector2Int cell)
+    {
+        base.Init(cell);
+    }
+
+    public override bool PlayerTryEnter(PlayerController playerController)
+    {
+        playerController.Attack();
+        Hurt(playerController.AttackPoints);
+
+        return false;
+    }
+
+    public void Hurt(int hurtPoints)
+    {
+        if (_hurtCoroutine != null)
+        {
+            StopCoroutine(_hurtCoroutine);
+        }
+        _hurtCoroutine = StartCoroutine(HurtCoroutine(hurtPoints));
+    }
+
     private void OnNewTurn()
     {
         Vector2Int playerPosition = GameManager.Instance.PlayerController.CellPosition;
 
         Vector2Int direction = playerPosition - _cellPosition;
 
-        Debug.DrawLine(transform.position, GameManager.Instance.BoardManager.CellToWorld(playerPosition), Color.red);
-
         if (IsPlayerInRange(direction))
         {
+            AttackPlayer();
             return;
         }
 
@@ -45,44 +85,106 @@ public class EnemyObject : CellObject
         }
     }
 
-    private bool IsPlayerInRange(Vector2Int direction)
+    private void AttackPlayer()
     {
-        return Mathf.Abs(direction.x) <= 1 && Mathf.Abs(direction.y) <= 1;
+        if (_attackCoroutine != null)
+        {
+            StopCoroutine(_attackCoroutine);
+        }
+        _attackCoroutine = StartCoroutine(AttackCoroutine());
     }
 
-    private bool TryMove(Vector2Int direction)
+    private bool IsPlayerInRange(Vector2Int direction)
     {
+        return Mathf.Abs(direction.sqrMagnitude) <= 1;
+    }
+
+    private bool CanMove(Vector2Int direction, out Vector2Int newCell)
+    {
+        newCell = _cellPosition + direction;
+
         if (direction.x == 0 && direction.y == 0)
         {
             return false;
         }
 
-        Vector2Int newCell = _cellPosition + direction;
-        if (GameManager.Instance.BoardManager.IsEmpty(newCell))
-        {
-            GameManager.Instance.BoardManager.MoveObject(_cellPosition, newCell);
-            _cellPosition = newCell;
-            transform.position = GameManager.Instance.BoardManager.CellToWorld(newCell);
-            return true;
-        }
-
-        return false;
+        return GameManager.Instance.BoardManager.IsEmpty(_cellPosition + direction);
     }
 
-    public override bool PlayerTryEnter(PlayerController playerController)
+    private bool TryMove(Vector2Int direction)
     {
-        if (_enemyHitPoints > 0)
+        if (!CanMove(direction, out Vector2Int newCell))
         {
-            playerController.Attack();
-
-            _enemyHitPoints--;
+            return false;
         }
 
-        if (_enemyHitPoints == 0)
+        GameManager.Instance.BoardManager.MoveObject(_cellPosition, newCell);
+
+        SetPosition(newCell);
+
+        return true;
+    }
+
+    private void SetPosition(Vector2Int position, bool immediate = false)
+    {
+        if (_moveCoroutine != null)
+        {
+            StopCoroutine(_moveCoroutine);
+        }
+
+        _moveCoroutine = StartCoroutine(MoveCoroutine(position, immediate));
+    }
+
+    private IEnumerator MoveCoroutine(Vector2Int position, bool immediate = false)
+    {
+        _isMoving = true;
+        _animator.SetBool(IsMovingHash, true);
+
+        if (!immediate && _moveDuration > 0)
+        {
+            Vector3 startingPos = transform.position;
+            Vector3 finalPos = GameManager.Instance.BoardManager.CellToWorld(position);
+
+            float elapsedTime = 0;
+            while (elapsedTime < _moveDuration)
+            {
+                transform.position = Vector3.Lerp(startingPos, finalPos, (elapsedTime / _moveDuration));
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+        }
+
+        transform.position = GameManager.Instance.BoardManager.CellToWorld(position);
+        _cellPosition = position;
+
+        _isMoving = false;
+        _animator.SetBool(IsMovingHash, false);
+    }
+
+    private IEnumerator AttackCoroutine()
+    {
+        _isAttacking = true;
+
+        _animator.SetTrigger(AttacksHash);
+        yield return new WaitForSeconds(_attackDuration);
+
+        _isAttacking = false;
+    }
+
+    private IEnumerator HurtCoroutine(int hurtPoints)
+    {
+        _isHurting = true;
+
+        _animator.SetTrigger(IsHurtHash);
+        yield return new WaitForSeconds(_hurtDuration);
+
+        _enemyHitPoints -= hurtPoints;
+
+        if (_enemyHitPoints <= 0)
         {
             Destroy(gameObject);
         }
 
-        return false;
+        _isHurting = false;
     }
 }

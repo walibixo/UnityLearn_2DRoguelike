@@ -5,24 +5,27 @@ public class PlayerController : MonoBehaviour
 {
     private static readonly int IsMovingHash = Animator.StringToHash("IsMoving");
     private static readonly int AttacksHash = Animator.StringToHash("Attacks");
+    private static readonly int IsHurtHash = Animator.StringToHash("IsHurt");
 
     public Vector2Int CellPosition { get; private set; }
+    public int AttackPoints { get; private set; } = 1;
 
     [SerializeField] private float _moveDuration;
     [SerializeField] private float _attackDuration;
+    [SerializeField] private float _hurtDuration;
 
-    private BoardManager _boardManager;
     private Animator _animator;
 
     private bool _isMoving;
     private bool _isAttacking;
+    private bool _isHurting;
 
     private Coroutine _moveCoroutine;
     private Coroutine _attackCoroutine;
+    private Coroutine _hurtCoroutine;
 
     void Awake()
     {
-        _boardManager = FindFirstObjectByType<BoardManager>();
         _animator = GetComponent<Animator>();
     }
 
@@ -38,7 +41,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        if (_isMoving || _isAttacking)
+        if (_isMoving || _isAttacking || _isHurting)
         {
             return;
         }
@@ -77,18 +80,25 @@ public class PlayerController : MonoBehaviour
         _attackCoroutine = StartCoroutine(AttackCoroutine());
     }
 
+    public void Hurt(int hurtPoints)
+    {
+        if (_hurtCoroutine != null)
+        {
+            StopCoroutine(_hurtCoroutine);
+        }
+        _hurtCoroutine = StartCoroutine(HurtCoroutine());
+    }
+
     private void TryMove(Vector2Int direction)
     {
         Vector2Int newPosition = CellPosition + direction;
 
-        if (!_boardManager.IsPassable(newPosition))
+        if (!GameManager.Instance.BoardManager.IsPassable(newPosition))
         {
             return;
         }
 
-        GameManager.Instance.TurnManager.Tick();
-
-        var cellObject = _boardManager.GetObject(newPosition);
+        var cellObject = GameManager.Instance.BoardManager.GetObject(newPosition);
         if (cellObject == null)
         {
             SetPosition(newPosition);
@@ -96,6 +106,10 @@ public class PlayerController : MonoBehaviour
         else if (cellObject.PlayerTryEnter(this))
         {
             SetPosition(newPosition);
+        }
+        else
+        {
+            GameManager.Instance.TurnManager.Tick();
         }
     }
 
@@ -117,7 +131,7 @@ public class PlayerController : MonoBehaviour
         if (!immediate && _moveDuration > 0)
         {
             Vector3 startingPos = transform.position;
-            Vector3 finalPos = _boardManager.CellToWorld(position);
+            Vector3 finalPos = GameManager.Instance.BoardManager.CellToWorld(position);
 
             float elapsedTime = 0;
             while (elapsedTime < _moveDuration)
@@ -128,17 +142,20 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        transform.position = _boardManager.CellToWorld(position);
+        transform.position = GameManager.Instance.BoardManager.CellToWorld(position);
         CellPosition = position;
 
         _isMoving = false;
         _animator.SetBool(IsMovingHash, false);
 
-        var cellObject = _boardManager.GetObject(position);
+        var cellObject = GameManager.Instance.BoardManager.GetObject(position);
         if (cellObject != null)
         {
             cellObject.PlayerEntered(this);
         }
+
+        if(!immediate)
+            GameManager.Instance.TurnManager.Tick();
     }
 
     private IEnumerator AttackCoroutine()
@@ -149,6 +166,16 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(_attackDuration);
 
         _isAttacking = false;
+    }
+
+    private IEnumerator HurtCoroutine()
+    {
+        _isHurting = true;
+
+        _animator.SetTrigger(IsHurtHash);
+        yield return new WaitForSeconds(_attackDuration);
+
+        _isHurting = false;
     }
 
     private void FlipSprite(bool flip)

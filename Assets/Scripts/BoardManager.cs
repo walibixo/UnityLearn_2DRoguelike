@@ -229,7 +229,7 @@ public class BoardManager : MonoBehaviour
 
     private void SetExitObject()
     {
-        Vector2Int position = new Vector2Int(_width - 2, _height - 2);
+        Vector2Int position = new(_width - 2, _height - 2);
         SetObject(_exitCellPrefab, position);
     }
 }

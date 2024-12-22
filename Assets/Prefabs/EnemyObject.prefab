@@ -47,6 +47,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enemyHitPoints: 2
+  _moveDuration: 0.4
+  _attackDuration: 0.3
+  _hurtDuration: 0.3
 --- !u!212 &1039499322603942180
 SpriteRenderer:
   m_ObjectHideFlags: 0
