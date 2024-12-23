@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
     private static readonly int IsHurtHash = Animator.StringToHash("IsHurt");
 
     public Vector2Int CellPosition { get; private set; }
-    public int AttackPoints { get; private set; } = 1;
+    public int AttackPoints { get; private set; }
 
     [SerializeField] private float _moveDuration;
     [SerializeField] private float _attackDuration;
@@ -16,9 +16,12 @@ public class PlayerController : MonoBehaviour
 
     private Animator _animator;
 
+    private bool _isPerformingAction;
     private bool _isMoving;
     private bool _isAttacking;
     private bool _isHurting;
+
+    public bool IsPerformingAction => _isPerformingAction || _isMoving || _isAttacking || _isHurting;
 
     private Coroutine _moveCoroutine;
     private Coroutine _attackCoroutine;
@@ -27,6 +30,18 @@ public class PlayerController : MonoBehaviour
     void Awake()
     {
         _animator = GetComponent<Animator>();
+
+        AttackPoints = 1;
+    }
+
+    private void Start()
+    {
+        GameManager.Instance.TurnManager.OnStartEnemyTurn += OnNewTurn;
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.Instance.TurnManager.OnStartEnemyTurn -= OnNewTurn;
     }
 
     void Update()
@@ -89,6 +104,11 @@ public class PlayerController : MonoBehaviour
         _hurtCoroutine = StartCoroutine(HurtCoroutine());
     }
 
+    private void OnNewTurn()
+    {
+        _isPerformingAction = true;
+    }
+
     private void TryMove(Vector2Int direction)
     {
         Vector2Int newPosition = CellPosition + direction;
@@ -109,7 +129,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            GameManager.Instance.TurnManager.Tick();
+            _isPerformingAction = false;
         }
     }
 
@@ -154,8 +174,8 @@ public class PlayerController : MonoBehaviour
             cellObject.PlayerEntered(this);
         }
 
-        if(!immediate)
-            GameManager.Instance.TurnManager.Tick();
+        if (!immediate)
+            _isPerformingAction = false;
     }
 
     private IEnumerator AttackCoroutine()

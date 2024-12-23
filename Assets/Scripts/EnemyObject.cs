@@ -13,9 +13,12 @@ public class EnemyObject : CellObject
     [SerializeField] private float _attackDuration;
     [SerializeField] private float _hurtDuration;
 
+    private bool _isPerformingAction;
     private bool _isMoving;
     private bool _isAttacking;
     private bool _isHurting;
+
+    public bool IsPerformingAction => _isPerformingAction || _isMoving || _isAttacking || _isHurting;
 
     private Coroutine _moveCoroutine;
     private Coroutine _attackCoroutine;
@@ -26,13 +29,18 @@ public class EnemyObject : CellObject
     private void Awake()
     {
         _animator = GetComponent<Animator>();
+    }
 
-        GameManager.Instance.TurnManager.OnTick += OnNewTurn;
+    private void Start()
+    {
+        GameManager.Instance.TurnManager.RegisterEnemy(this);
+        GameManager.Instance.TurnManager.OnStartEnemyTurn += OnNewTurn;
     }
 
     private void OnDestroy()
     {
-        GameManager.Instance.TurnManager.OnTick -= OnNewTurn;
+        GameManager.Instance.TurnManager.UnregisterEnemy(this);
+        GameManager.Instance.TurnManager.OnStartEnemyTurn -= OnNewTurn;
     }
 
     public override void Init(Vector2Int cell)
@@ -58,6 +66,13 @@ public class EnemyObject : CellObject
     }
 
     private void OnNewTurn()
+    {
+        _isPerformingAction = true;
+        PerformAction();
+        _isPerformingAction = false;
+    }
+
+    private void PerformAction()
     {
         Vector2Int playerPosition = GameManager.Instance.PlayerController.CellPosition;
 
@@ -180,11 +195,11 @@ public class EnemyObject : CellObject
 
         _enemyHitPoints -= hurtPoints;
 
+        _isHurting = false;
+
         if (_enemyHitPoints <= 0)
         {
             Destroy(gameObject);
         }
-
-        _isHurting = false;
     }
 }

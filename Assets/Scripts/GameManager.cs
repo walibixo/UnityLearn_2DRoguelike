@@ -28,19 +28,19 @@ public class GameManager : MonoBehaviour
         }
 
         Instance = this;
-    }
 
-    void Start()
-    {
         PlayerController = FindFirstObjectByType<PlayerController>();
         BoardManager = FindFirstObjectByType<BoardManager>();
+        TurnManager = FindFirstObjectByType<TurnManager>();
         _uiDocument = FindFirstObjectByType<UIDocument>();
         _foodLabel = _uiDocument.rootVisualElement.Q<Label>("FoodLabel");
         _gameOverPanel = _uiDocument.rootVisualElement.Q<VisualElement>("GameOverPanel");
         _gameOverLabel = _gameOverPanel.Q<Label>("GameOverLabel");
+    }
 
-        TurnManager = new TurnManager();
-        TurnManager.OnTick += OnNewTurn;
+    void Start()
+    {
+        TurnManager.OnStartPlayerTurn += OnNewTurn;
 
         StartNewGame();
     }
@@ -66,6 +66,8 @@ public class GameManager : MonoBehaviour
         BoardManager.GenerateBoard();
 
         PlayerController.Spawn(BoardManager.PlayerStart);
+
+        TurnManager.StartPlayerTurn();
     }
 
     public void GameOver()
