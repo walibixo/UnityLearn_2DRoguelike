@@ -46,7 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74eab181c4d36e742b190169dba272e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enemyHitPoints: 2
+  _hitPoints: 2
+  _attackPoints: 1
   _moveDuration: 0.4
   _attackDuration: 0.3
   _hurtDuration: 0.3

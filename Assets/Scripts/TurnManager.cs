@@ -24,6 +24,8 @@ public class TurnManager : MonoBehaviour
     {
         _turnCount += 1;
 
+        Debug.Log($"Turn {_turnCount} - Player");
+
         OnStartPlayerTurn?.Invoke();
         StartCoroutine(PlayerTurnCoroutine());
     }
@@ -49,6 +51,8 @@ public class TurnManager : MonoBehaviour
     public void StartEnemyTurn()
     {
         _turnCount += 1;
+
+        Debug.Log($"Turn {_turnCount} - Enemies");
 
         OnStartEnemyTurn?.Invoke();
         StartCoroutine(EnemyTurnCoroutine());

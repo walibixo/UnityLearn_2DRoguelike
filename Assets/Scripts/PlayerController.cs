@@ -36,12 +36,12 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        GameManager.Instance.TurnManager.OnStartEnemyTurn += OnNewTurn;
+        GameManager.Instance.TurnManager.OnStartPlayerTurn += OnNewTurn;
     }
 
     private void OnDestroy()
     {
-        GameManager.Instance.TurnManager.OnStartEnemyTurn -= OnNewTurn;
+        GameManager.Instance.TurnManager.OnStartPlayerTurn -= OnNewTurn;
     }
 
     void Update()
@@ -53,6 +53,11 @@ public class PlayerController : MonoBehaviour
                 GameManager.Instance.StartNewGame();
             }
 
+            return;
+        }
+
+        if (!_isPerformingAction)
+        {
             return;
         }
 

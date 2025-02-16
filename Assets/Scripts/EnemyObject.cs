@@ -7,7 +7,8 @@ public class EnemyObject : CellObject
     private static readonly int AttacksHash = Animator.StringToHash("Attacks");
     private static readonly int IsHurtHash = Animator.StringToHash("IsHurt");
 
-    [SerializeField] private int _enemyHitPoints;
+    [SerializeField] private int _hitPoints;
+    [SerializeField] private int _attackPoints;
 
     [SerializeField] private float _moveDuration;
     [SerializeField] private float _attackDuration;
@@ -77,6 +78,15 @@ public class EnemyObject : CellObject
         Vector2Int playerPosition = GameManager.Instance.PlayerController.CellPosition;
 
         Vector2Int direction = playerPosition - _cellPosition;
+
+        if (direction.x > 0)
+        {
+            FlipSprite(true);
+        }
+        else if (direction.x < 0)
+        {
+            FlipSprite(false);
+        }
 
         if (IsPlayerInRange(direction))
         {
@@ -183,6 +193,8 @@ public class EnemyObject : CellObject
         _animator.SetTrigger(AttacksHash);
         yield return new WaitForSeconds(_attackDuration);
 
+        GameManager.Instance.PlayerController.Hurt(_attackPoints);
+
         _isAttacking = false;
     }
 
@@ -193,13 +205,20 @@ public class EnemyObject : CellObject
         _animator.SetTrigger(IsHurtHash);
         yield return new WaitForSeconds(_hurtDuration);
 
-        _enemyHitPoints -= hurtPoints;
+        _hitPoints -= hurtPoints;
 
         _isHurting = false;
 
-        if (_enemyHitPoints <= 0)
+        if (_hitPoints <= 0)
         {
             Destroy(gameObject);
         }
+    }
+
+    private void FlipSprite(bool flip)
+    {
+        Vector3 scale = transform.localScale;
+        scale.x = flip ? -1 : 1;
+        transform.localScale = scale;
     }
 }
