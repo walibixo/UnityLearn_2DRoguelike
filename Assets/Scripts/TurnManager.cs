@@ -20,11 +20,15 @@ public class TurnManager : MonoBehaviour
         _turnCount = 0;
     }
 
-    public void StartPlayerTurn()
+    public void Start()
+    {
+        StopAllCoroutines();
+        StartPlayerTurn();
+    }
+
+    private void StartPlayerTurn()
     {
         _turnCount += 1;
-
-        Debug.Log($"Turn {_turnCount} - Player");
 
         OnStartPlayerTurn?.Invoke();
         StartCoroutine(PlayerTurnCoroutine());
@@ -37,6 +41,8 @@ public class TurnManager : MonoBehaviour
             yield return null;
         }
 
+        yield return null;
+
         foreach (var enemy in _enemies)
         {
             while (enemy.IsPerformingAction)
@@ -48,11 +54,9 @@ public class TurnManager : MonoBehaviour
         StartEnemyTurn();
     }
 
-    public void StartEnemyTurn()
+    private void StartEnemyTurn()
     {
         _turnCount += 1;
-
-        Debug.Log($"Turn {_turnCount} - Enemies");
 
         OnStartEnemyTurn?.Invoke();
         StartCoroutine(EnemyTurnCoroutine());
@@ -67,6 +71,8 @@ public class TurnManager : MonoBehaviour
                 yield return null;
             }
         }
+
+        yield return null;
 
         while (_playerController.IsPerformingAction)
         {

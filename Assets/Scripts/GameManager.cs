@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
 
         PlayerController.Spawn(BoardManager.PlayerStart);
 
-        TurnManager.StartPlayerTurn();
+        TurnManager.Start();
     }
 
     public void GameOver()
