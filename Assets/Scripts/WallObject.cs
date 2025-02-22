@@ -32,6 +32,7 @@ public class WallObject : CellObject
         }
         else
         {
+            Destroy(gameObject);
             return true;
         }
     }
