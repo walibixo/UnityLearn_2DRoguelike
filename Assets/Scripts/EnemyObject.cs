@@ -105,24 +105,27 @@ public class EnemyObject : CellObject
             FlipSprite(false);
         }
 
-        if (IsPlayerInRange(direction))
+        if (IsPlayerInAttackRange(direction))
         {
             AttackPlayer();
             return;
         }
 
-        if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+        if (IsPlayerInAggroRange(direction))
         {
-            if (!TryMove(new Vector2Int(Mathf.RoundToInt(Mathf.Sign(direction.x)), 0)))
+            if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
             {
-                TryMove(new Vector2Int(0, Mathf.RoundToInt(Mathf.Sign(direction.y))));
+                if (!TryMove(new Vector2Int(Mathf.RoundToInt(Mathf.Sign(direction.x)), 0)))
+                {
+                    TryMove(new Vector2Int(0, Mathf.RoundToInt(Mathf.Sign(direction.y))));
+                }
             }
-        }
-        else
-        {
-            if (!TryMove(new Vector2Int(0, Mathf.RoundToInt(Mathf.Sign(direction.y)))))
+            else
             {
-                TryMove(new Vector2Int(Mathf.RoundToInt(Mathf.Sign(direction.x)), 0));
+                if (!TryMove(new Vector2Int(0, Mathf.RoundToInt(Mathf.Sign(direction.y)))))
+                {
+                    TryMove(new Vector2Int(Mathf.RoundToInt(Mathf.Sign(direction.x)), 0));
+                }
             }
         }
     }
@@ -149,9 +152,15 @@ public class EnemyObject : CellObject
         }
     }
 
-    private bool IsPlayerInRange(Vector2Int direction)
+    private bool IsPlayerInAttackRange(Vector2Int direction)
     {
         return Mathf.Abs(direction.sqrMagnitude) <= 1;
+    }
+
+    private bool IsPlayerInAggroRange(Vector2Int direction)
+    {
+        Debug.Log(direction.sqrMagnitude);
+        return Mathf.Abs(direction.sqrMagnitude) <= 5;
     }
 
     private bool CanMove(Vector2Int direction, out Vector2Int newCell)
