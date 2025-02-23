@@ -718,8 +718,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c43cde0728411524c8035163a5577b39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _width: 8
-  _height: 8
+  _widthMin: 8
+  _heightMin: 8
   _groundTiles:
   - {fileID: 11400000, guid: 6fe4a114d266db64b8b7ab670af944d0, type: 2}
   - {fileID: 11400000, guid: e9d6f3fd74a09b446a78e9666abeac53, type: 2}

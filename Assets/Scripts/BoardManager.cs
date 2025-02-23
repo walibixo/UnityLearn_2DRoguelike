@@ -8,8 +8,8 @@ public class BoardManager : MonoBehaviour
     public static readonly Vector2Int PlayerStart = new(1, 1);
 
     [Header("Board Size")]
-    [SerializeField] private int _width;
-    [SerializeField] private int _height;
+    [SerializeField] private int _widthMin;
+    [SerializeField] private int _heightMin;
 
     [Header("Base Tiles")]
     [SerializeField] private Tile[] _groundTiles;
@@ -45,6 +45,9 @@ public class BoardManager : MonoBehaviour
         }
     }
 
+    private int _width;
+    private int _height;
+
     private CellData[,] _cellsData;
     private List<Vector2Int> _emptyCells;
 
@@ -56,12 +59,15 @@ public class BoardManager : MonoBehaviour
         _tilemap = GetComponentInChildren<Tilemap>();
         _grid = GetComponentInChildren<Grid>();
 
-        _cellsData = new CellData[_width, _height];
         _emptyCells = new List<Vector2Int>();
     }
 
-    public void GenerateBoard()
+    public void GenerateBoard(int difficultyLevel)
     {
+        _width = _widthMin + Random.Range(0, difficultyLevel);
+        _height = _heightMin + Random.Range(0, difficultyLevel);
+        _cellsData = new CellData[_width, _height];
+
         SetGroundTiles();
         SetExitObject();
         SetFoodObjects();
@@ -118,7 +124,7 @@ public class BoardManager : MonoBehaviour
     public CellObject GetObject(Vector2Int position)
     {
         var cellData = GetCellData(position);
-        return cellData != null ? cellData.ContainedObject : null;
+        return cellData?.ContainedObject;
     }
 
     public void MoveObject(Vector2Int from, Vector2Int to)

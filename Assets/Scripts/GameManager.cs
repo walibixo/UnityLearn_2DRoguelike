@@ -63,7 +63,7 @@ public class GameManager : MonoBehaviour
         _levelCount++;
 
         BoardManager.ClearBoard();
-        BoardManager.GenerateBoard();
+        BoardManager.GenerateBoard(_levelCount);
 
         PlayerController.Spawn(BoardManager.PlayerStart);
 
