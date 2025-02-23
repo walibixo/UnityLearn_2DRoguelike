@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using UnityEngine;
@@ -9,7 +10,7 @@ public class TurnManager : MonoBehaviour
 
     private PlayerController _playerController;
 
-    private readonly ConcurrentBag<EnemyObject> _enemies = new();
+    private readonly ConcurrentDictionary<Guid, EnemyObject> _enemies = new();
 
     private int _turnCount;
 
@@ -43,7 +44,7 @@ public class TurnManager : MonoBehaviour
 
         yield return null;
 
-        foreach (var enemy in _enemies)
+        foreach (var (_, enemy) in _enemies)
         {
             while (enemy.IsPerformingAction)
             {
@@ -64,7 +65,7 @@ public class TurnManager : MonoBehaviour
 
     private IEnumerator EnemyTurnCoroutine()
     {
-        foreach (var enemy in _enemies)
+        foreach (var (_, enemy) in _enemies)
         {
             while (enemy.IsPerformingAction)
             {
@@ -84,11 +85,11 @@ public class TurnManager : MonoBehaviour
 
     public void RegisterEnemy(EnemyObject enemy)
     {
-        _enemies.Add(enemy);
+        _enemies.TryAdd(enemy.Id, enemy);
     }
 
     public void UnregisterEnemy(EnemyObject enemy)
     {
-        _enemies.TryTake(out enemy);
+        _enemies.TryRemove(enemy.Id, out _);
     }
 }

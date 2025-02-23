@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -26,6 +27,8 @@ public class EnemyObject : CellObject
     private Coroutine _hurtCoroutine;
 
     private Animator _animator;
+
+    public Guid Id { get; } = Guid.NewGuid();
 
     private void Awake()
     {
