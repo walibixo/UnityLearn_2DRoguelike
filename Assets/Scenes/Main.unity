@@ -602,8 +602,8 @@ MonoBehaviour:
   - {fileID: 5007473883255699070, guid: 0db76e6b560914a41bce62cb604613e1, type: 3}
   - {fileID: 5007473883255699070, guid: 9e5dc45b47ed4e24db9218d1646b4f74, type: 3}
   - {fileID: 5007473883255699070, guid: fe079043f6eddd148a44d59abff2643e, type: 3}
-  _wallAmountMin: 3
-  _wallAmountMax: 5
+  _wallAmountMin: 5
+  _wallAmountMax: 8
   _enemyPrefabs:
   - {fileID: 2452846495686160346, guid: 2f7adfbf124fc504a9e93d011c7ad6d9, type: 3}
   _enemyAmountMin: 2
