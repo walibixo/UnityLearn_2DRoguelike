@@ -120,6 +120,8 @@ public class PlayerController : MonoBehaviour
         _isHurting = true;
         _hurtCoroutine = StartCoroutine(HurtCoroutine());
 
+        GameManager.Instance.UpdateFoodAmount(-hurtPoints);
+
         IEnumerator HurtCoroutine()
         {
             _animator.SetTrigger(IsHurtHash);
