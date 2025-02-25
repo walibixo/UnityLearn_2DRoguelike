@@ -70,9 +70,9 @@ public class BoardManager : MonoBehaviour
 
         SetGroundTiles();
         SetExitObject();
-        SetFoodObjects();
-        SetWallObjects();
-        SetEnemyObjects();
+        SetFoodObjects(difficultyLevel);
+        SetWallObjects(difficultyLevel);
+        SetEnemyObjects(difficultyLevel);
     }
 
     public void ClearBoard()
@@ -184,9 +184,9 @@ public class BoardManager : MonoBehaviour
         _cellsData[x, y] = new CellData(isPassable, containedObject);
     }
 
-    private void SetFoodObjects()
+    private void SetFoodObjects(int difficultyLevel)
     {
-        int foodAmount = Random.Range(_foodAmountMin, _foodAmountMax + 1);
+        int foodAmount = Random.Range(_foodAmountMin + difficultyLevel, (_foodAmountMax + 1) + difficultyLevel);
         for (int i = 0; i < foodAmount; ++i)
         {
             SetObject(GetFoodPrefab());
@@ -195,9 +195,9 @@ public class BoardManager : MonoBehaviour
 
     private FoodObject GetFoodPrefab() => _foodPrefabs[Random.Range(0, _foodPrefabs.Length)];
 
-    private void SetWallObjects()
+    private void SetWallObjects(int difficultyLevel)
     {
-        int wallAmount = Random.Range(_wallAmountMin, _wallAmountMax + 1);
+        int wallAmount = Random.Range(_wallAmountMin + difficultyLevel, (_wallAmountMax + 1) + difficultyLevel);
         for (int i = 0; i < wallAmount; ++i)
         {
             SetObject(GetWallPrefab());
@@ -206,9 +206,9 @@ public class BoardManager : MonoBehaviour
 
     private WallObject GetWallPrefab() => _wallPrefabs[Random.Range(0, _wallPrefabs.Length)];
 
-    private void SetEnemyObjects()
+    private void SetEnemyObjects(int difficultyLevel)
     {
-        int enemyAmount = Random.Range(_enemyAmountMin, _enemyAmountMax + 1);
+        int enemyAmount = Random.Range(_enemyAmountMin + difficultyLevel, (_enemyAmountMax + 1) + difficultyLevel);
         for (int i = 0; i < enemyAmount; ++i)
         {
             SetObject(GetEnemyPrefab());
