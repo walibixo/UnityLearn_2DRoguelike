@@ -84,6 +84,10 @@ public class PlayerController : MonoBehaviour
             FlipSprite(false);
             TryMove(Vector2Int.right);
         }
+        else if(Input.GetKeyDown(KeyCode.Space))
+        {
+            WaitATurn();
+        }
     }
 
     public void Spawn(Vector2Int position)
@@ -134,6 +138,11 @@ public class PlayerController : MonoBehaviour
     private void OnNewTurn()
     {
         _isPerformingAction = true;
+    }
+
+    private void WaitATurn()
+    {
+        _isPerformingAction = false;
     }
 
     private void TryMove(Vector2Int direction)
