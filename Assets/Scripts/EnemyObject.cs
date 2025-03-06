@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class EnemyObject : CellObject
 {
@@ -29,6 +30,16 @@ public class EnemyObject : CellObject
     private Animator _animator;
 
     public Guid Id { get; } = Guid.NewGuid();
+
+    private readonly Vector2Int[] _directions
+        = new Vector2Int[]
+        {
+            new (1, 0),
+            new (-1, 0),
+            new (0, 1),
+            new (0, -1),
+            new (0, 0)
+        };
 
     private void Awake()
     {
@@ -130,6 +141,10 @@ public class EnemyObject : CellObject
                     TryMove(new Vector2Int(Mathf.RoundToInt(Mathf.Sign(direction.x)), 0));
                 }
             }
+        }
+        else
+        {
+            TryMove(_directions[Random.Range(0, _directions.Length)]);
         }
     }
 
