@@ -14,6 +14,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _attackDuration;
     [SerializeField] private float _hurtDuration;
 
+    [Header("Sounds")]
+    [SerializeField] private AudioClip _walkSound;
+    [SerializeField] private AudioClip _hitSound;
+    [SerializeField] private AudioClip _blockedSound;
+
     private Animator _animator;
 
     private bool _isPerformingAction;
@@ -84,7 +89,7 @@ public class PlayerController : MonoBehaviour
             FlipSprite(false);
             TryMove(Vector2Int.right);
         }
-        else if(Input.GetKeyDown(KeyCode.Space))
+        else if (Input.GetKeyDown(KeyCode.Space))
         {
             WaitATurn();
         }
@@ -128,6 +133,8 @@ public class PlayerController : MonoBehaviour
 
         IEnumerator HurtCoroutine()
         {
+            GameManager.Instance.SoundManager.PlaySound(_hitSound, true);
+
             _animator.SetTrigger(IsHurtHash);
             yield return new WaitForSeconds(_hurtDuration);
 
@@ -151,6 +158,7 @@ public class PlayerController : MonoBehaviour
 
         if (!GameManager.Instance.BoardManager.IsPassable(newPosition))
         {
+            GameManager.Instance.SoundManager.PlaySound(_blockedSound, true);
             return;
         }
 
@@ -181,6 +189,8 @@ public class PlayerController : MonoBehaviour
 
         IEnumerator MoveCoroutine(Vector2Int position, bool immediate = false)
         {
+            GameManager.Instance.SoundManager.PlaySound(_walkSound, true);
+
             _animator.SetBool(IsMovingHash, true);
 
             if (!immediate && _moveDuration > 0)

@@ -16,6 +16,10 @@ public class EnemyObject : CellObject
     [SerializeField] private float _attackDuration;
     [SerializeField] private float _hurtDuration;
 
+    [Header("Sounds")]
+    [SerializeField] private AudioClip _walkSound;
+    [SerializeField] private AudioClip _hitSound;
+
     private bool _isPerformingAction;
     private bool _isMoving;
     private bool _isAttacking;
@@ -83,6 +87,8 @@ public class EnemyObject : CellObject
 
         IEnumerator HurtCoroutine(int hurtPoints)
         {
+            GameManager.Instance.SoundManager.PlaySound(_hitSound, true);
+
             _animator.SetTrigger(IsHurtHash);
             yield return new WaitForSeconds(_hurtDuration);
 
@@ -219,6 +225,8 @@ public class EnemyObject : CellObject
 
         IEnumerator MoveCoroutine(Vector2Int position, bool immediate = false)
         {
+            GameManager.Instance.SoundManager.PlaySound(_walkSound);
+
             _animator.SetBool(IsMovingHash, true);
 
             if (!immediate && _moveDuration > 0)

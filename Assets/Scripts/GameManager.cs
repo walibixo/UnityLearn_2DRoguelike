@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     public PlayerController PlayerController { get; private set; }
     public BoardManager BoardManager { get; private set; }
     public TurnManager TurnManager { get; private set; }
+    public SoundManager SoundManager { get; private set; }
 
     public bool IsGameOver { get; private set; }
 
@@ -32,6 +33,7 @@ public class GameManager : MonoBehaviour
         PlayerController = FindFirstObjectByType<PlayerController>();
         BoardManager = FindFirstObjectByType<BoardManager>();
         TurnManager = FindFirstObjectByType<TurnManager>();
+        SoundManager = FindFirstObjectByType<SoundManager>();
         _uiDocument = FindFirstObjectByType<UIDocument>();
         _foodLabel = _uiDocument.rootVisualElement.Q<Label>("FoodLabel");
         _gameOverPanel = _uiDocument.rootVisualElement.Q<VisualElement>("GameOverPanel");

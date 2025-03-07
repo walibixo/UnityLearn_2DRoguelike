@@ -48,3 +48,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9efcdf2fd94e9c04fa34aa57602f21aa, type: 2}
   - {fileID: 11400000, guid: 3152384167f02e947bc24620f1c9538e, type: 2}
   - {fileID: 11400000, guid: 3af57550b879e49478a2da5cb79e697b, type: 2}
+  _hitSound: {fileID: 8300000, guid: f2ccb75e59527b04eb4b2902d6f24722, type: 3}
+  _destroyedSound: {fileID: 8300000, guid: 2b052ee2945f74a4ca2203d5a6432b8c, type: 3}

@@ -5,6 +5,10 @@ public class WallObject : CellObject
 {
     [SerializeField] private Tile[] _wallTiles;
 
+    [Header("Sounds")]
+    [SerializeField] private AudioClip _hitSound;
+    [SerializeField] private AudioClip _destroyedSound;
+
     private int _wallHitPoints;
 
     public override void Init(Vector2Int cell)
@@ -27,6 +31,16 @@ public class WallObject : CellObject
             playerController.Attack();
 
             _wallHitPoints--;
+
+            if (_wallHitPoints > 0)
+            {
+                GameManager.Instance.SoundManager.PlaySound(_hitSound, true);
+            }
+            else
+            {
+                GameManager.Instance.SoundManager.PlaySound(_destroyedSound, true);
+            }
+
             SetWallTile();
             return false;
         }
