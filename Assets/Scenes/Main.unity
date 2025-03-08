@@ -1088,6 +1088,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3164190585730527066, guid: c843c98ed19331d418be06e91f5a8d8c, type: 3}
+      propertyPath: _attackSound
+      value: 
+      objectReference: {fileID: 8300000, guid: c31d1c1b6c50a2f478f5901ded364365, type: 3}
+    - target: {fileID: 3164190585730527066, guid: c843c98ed19331d418be06e91f5a8d8c, type: 3}
+      propertyPath: _blockedSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 024472c5a635a924c90116dd016455bb, type: 3}
     - target: {fileID: 8687092665723852557, guid: c843c98ed19331d418be06e91f5a8d8c, type: 3}
       propertyPath: m_Name
       value: PlayerCharacter

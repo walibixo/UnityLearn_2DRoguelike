@@ -101,3 +101,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _foodAmount: 3
+  _foodUp: {fileID: 8300000, guid: 2e36e39f34c13e04bba1a1df61f949df, type: 3}

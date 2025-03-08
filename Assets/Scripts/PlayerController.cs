@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Sounds")]
     [SerializeField] private AudioClip _walkSound;
+    [SerializeField] private AudioClip _attackSound;
     [SerializeField] private AudioClip _hitSound;
     [SerializeField] private AudioClip _blockedSound;
 
@@ -112,6 +113,8 @@ public class PlayerController : MonoBehaviour
 
         IEnumerator AttackCoroutine()
         {
+            GameManager.Instance.SoundManager.PlaySound(_attackSound, true);
+
             _animator.SetTrigger(AttacksHash);
             yield return new WaitForSeconds(_attackDuration);
 
@@ -189,7 +192,8 @@ public class PlayerController : MonoBehaviour
 
         IEnumerator MoveCoroutine(Vector2Int position, bool immediate = false)
         {
-            GameManager.Instance.SoundManager.PlaySound(_walkSound, true);
+            if (!immediate)
+                GameManager.Instance.SoundManager.PlaySound(_walkSound, true);
 
             _animator.SetBool(IsMovingHash, true);
 

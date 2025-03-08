@@ -18,6 +18,7 @@ public class EnemyObject : CellObject
 
     [Header("Sounds")]
     [SerializeField] private AudioClip _walkSound;
+    [SerializeField] private AudioClip _attackSound;
     [SerializeField] private AudioClip _hitSound;
 
     private bool _isPerformingAction;
@@ -166,6 +167,7 @@ public class EnemyObject : CellObject
 
         IEnumerator AttackCoroutine()
         {
+            GameManager.Instance.SoundManager.PlaySound(_attackSound, true);
 
             _animator.SetTrigger(AttacksHash);
             yield return new WaitForSeconds(_attackDuration);

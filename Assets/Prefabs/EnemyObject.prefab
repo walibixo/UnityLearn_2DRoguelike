@@ -52,6 +52,7 @@ MonoBehaviour:
   _attackDuration: 0.3
   _hurtDuration: 0.2
   _walkSound: {fileID: 8300000, guid: 249d58325aeef0742b592b7b309a2e73, type: 3}
+  _attackSound: {fileID: 8300000, guid: b6ff96f65c9e8dc499f3f3cbf6ce342e, type: 3}
   _hitSound: {fileID: 8300000, guid: 6c858938e7eb5524a816096a699c6ebf, type: 3}
 --- !u!212 &1039499322603942180
 SpriteRenderer:

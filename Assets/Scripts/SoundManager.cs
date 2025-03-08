@@ -15,7 +15,7 @@ public class SoundManager : MonoBehaviour
     {
         if (_audioSource.isPlaying)
         {
-            volumeScale *= 0.2f;
+            volumeScale *= 0.6f;
         }
 
         if (randomPitch)
