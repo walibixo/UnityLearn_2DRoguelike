@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     public BoardManager BoardManager { get; private set; }
     public TurnManager TurnManager { get; private set; }
     public SoundManager SoundManager { get; private set; }
+    public ScreenTransition ScreenTransition { get; private set; }
 
     public bool IsGameOver { get; private set; }
 
@@ -34,6 +35,8 @@ public class GameManager : MonoBehaviour
         BoardManager = FindFirstObjectByType<BoardManager>();
         TurnManager = FindFirstObjectByType<TurnManager>();
         SoundManager = FindFirstObjectByType<SoundManager>();
+        ScreenTransition = FindFirstObjectByType<ScreenTransition>();
+
         _uiDocument = FindFirstObjectByType<UIDocument>();
         _foodLabel = _uiDocument.rootVisualElement.Q<Label>("FoodLabel");
         _gameOverPanel = _uiDocument.rootVisualElement.Q<VisualElement>("GameOverPanel");
@@ -62,6 +65,8 @@ public class GameManager : MonoBehaviour
 
     public void StartNewLevel()
     {
+        ScreenTransition.HideScreen();
+
         _levelCount++;
 
         BoardManager.ClearBoard();
@@ -70,6 +75,8 @@ public class GameManager : MonoBehaviour
         PlayerController.Spawn(BoardManager.PlayerStart);
 
         TurnManager.Start();
+
+        ScreenTransition.ShowScreen();
     }
 
     public void GameOver()
