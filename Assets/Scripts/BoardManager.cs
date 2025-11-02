@@ -64,8 +64,16 @@ public class BoardManager : MonoBehaviour
 
     public void GenerateBoard(int difficultyLevel)
     {
-        _width = _widthMin + Random.Range(0, difficultyLevel);
-        _height = _heightMin + Random.Range(0, difficultyLevel);
+        if (_width < _widthMin || _height < _heightMin || difficultyLevel <= 1)
+        {
+            _width = _widthMin;
+            _height = _heightMin;
+        }
+
+        _width += Random.Range(0, 3);
+        _height += Random.Range(0, 3);
+
+
         _cellsData = new CellData[_width, _height];
 
         SetGroundTiles();
@@ -77,6 +85,11 @@ public class BoardManager : MonoBehaviour
 
     public void ClearBoard()
     {
+        if (_cellsData == null)
+        {
+            return;
+        }
+
         _emptyCells.Clear();
 
         for (int y = 0; y < _height; ++y)
