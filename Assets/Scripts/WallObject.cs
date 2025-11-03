@@ -24,11 +24,11 @@ public class WallObject : CellObject
         GameManager.Instance.BoardManager.SetCellTile(_cellPosition, _wallTiles[_wallHitPoints]);
     }
 
-    public override bool PlayerTryEnter(PlayerController playerController)
+    public override bool PlayerTryEnter(PlayerController playerController, Vector2Int direction)
     {
         if (_wallHitPoints > 0)
         {
-            playerController.Attack();
+            playerController.Attack(direction);
 
             _wallHitPoints--;
 

@@ -68,9 +68,9 @@ public class EnemyObject : CellObject
         base.Init(cell);
     }
 
-    public override bool PlayerTryEnter(PlayerController playerController)
+    public override bool PlayerTryEnter(PlayerController playerController, Vector2Int direction)
     {
-        playerController.Attack();
+        playerController.Attack(direction);
         Hurt(playerController.AttackPoints);
 
         return false;
@@ -128,7 +128,7 @@ public class EnemyObject : CellObject
 
         if (IsPlayerInAttackRange(direction))
         {
-            AttackPlayer();
+            AttackPlayer(direction);
             return;
         }
 
@@ -155,7 +155,7 @@ public class EnemyObject : CellObject
         }
     }
 
-    private void AttackPlayer()
+    private void AttackPlayer(Vector2Int direction)
     {
         if (_attackCoroutine != null)
         {
@@ -170,7 +170,45 @@ public class EnemyObject : CellObject
             GameManager.Instance.SoundManager.PlaySound(_attackSound, true);
 
             _animator.SetTrigger(AttacksHash);
-            yield return new WaitForSeconds(_attackDuration);
+
+            Vector3 startPos = transform.position;
+            Vector3 targetPos = startPos;
+
+            if (direction != Vector2Int.zero)
+            {
+                targetPos = GameManager.Instance.BoardManager.CellToWorld(_cellPosition + direction);
+            }
+
+            if (_attackDuration > 0f)
+            {
+                float halfDuration = _attackDuration * 0.5f;
+                float elapsed = 0f;
+
+                // Move forward: start -> target
+                while (elapsed < halfDuration)
+                {
+                    float t = Mathf.Clamp01(elapsed / halfDuration);
+                    transform.position = Vector3.Lerp(startPos, targetPos, t);
+                    elapsed += Time.deltaTime;
+                    yield return null;
+                }
+                transform.position = targetPos;
+
+                // Move backward: target -> start
+                elapsed = 0f;
+                while (elapsed < halfDuration)
+                {
+                    float t = Mathf.Clamp01(elapsed / halfDuration);
+                    transform.position = Vector3.Lerp(targetPos, startPos, t);
+                    elapsed += Time.deltaTime;
+                    yield return null;
+                }
+                transform.position = startPos;
+            }
+            else
+            {
+                yield return null;
+            }
 
             GameManager.Instance.PlayerController.Hurt(_attackPoints);
 

@@ -12,5 +12,5 @@ public class CellObject : MonoBehaviour
     //Called when the player enter the cell in which that object is
     public virtual void PlayerEntered(PlayerController playerController) { }
 
-    public virtual bool PlayerTryEnter(PlayerController playerController) { return true; }
+    public virtual bool PlayerTryEnter(PlayerController playerController, Vector2Int direction) { return true; }
 }
