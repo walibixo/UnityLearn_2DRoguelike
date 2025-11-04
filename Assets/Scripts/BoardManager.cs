@@ -117,7 +117,7 @@ public class BoardManager : MonoBehaviour
         SetCellTile(position.x, position.y, tile);
     }
 
-    public void SetCellTile(int x, int y, Tile tile)
+    private void SetCellTile(int x, int y, Tile tile)
     {
         _tilemap.SetTile(new Vector3Int(x, y, 0), tile);
     }
@@ -195,6 +195,11 @@ public class BoardManager : MonoBehaviour
     private void SetCellData(int x, int y, bool isPassable, CellObject containedObject = null)
     {
         _cellsData[x, y] = new CellData(isPassable, containedObject);
+    }
+
+    public void SetFoodObject(Vector2Int postion)
+    {
+        SetObject(GetFoodPrefab(), postion);
     }
 
     private void SetFoodObjects(int difficultyLevel)
