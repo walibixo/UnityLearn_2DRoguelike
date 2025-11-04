@@ -12,6 +12,8 @@ public class EnemyObject : CellObject
     [SerializeField] private int _hitPoints;
     [SerializeField] private int _attackPoints;
 
+    [SerializeField, Range(0.0f, 1.0f)] private float _lootDropChance;
+
     [SerializeField] private float _moveDuration;
     [SerializeField] private float _attackDuration;
     [SerializeField] private float _hurtDuration;
@@ -99,6 +101,11 @@ public class EnemyObject : CellObject
 
             if (_hitPoints <= 0)
             {
+                if (Random.value < _lootDropChance)
+                {
+                    GameManager.Instance.BoardManager.SetFoodObject(_cellPosition);
+                }
+
                 Destroy(gameObject);
             }
         }

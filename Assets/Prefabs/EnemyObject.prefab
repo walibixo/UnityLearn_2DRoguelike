@@ -48,6 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _hitPoints: 2
   _attackPoints: 1
+  _lootDropChance: 0.5
   _moveDuration: 0.4
   _attackDuration: 0.3
   _hurtDuration: 0.2
