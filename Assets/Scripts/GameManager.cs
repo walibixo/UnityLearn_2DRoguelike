@@ -66,9 +66,9 @@ public class GameManager : MonoBehaviour
     {
         ScreenTransition.HideScreen();
 
-        _levelCount++;
-
         SaveGameState();
+
+        _levelCount++;
 
         BoardManager.ClearBoard();
         BoardManager.GenerateBoard(_levelCount);
@@ -104,7 +104,7 @@ public class GameManager : MonoBehaviour
     public void UpdateFoodAmount(int relativeAmount = 0)
     {
         _foodAmount += relativeAmount;
-        _foodLabel.text = "Food : " + _foodAmount;
+        _foodLabel.text = "Food : " + _foodAmount.ToString().Replace('9', 'P').Replace('8', 'B');
     }
 
     private void SaveGameState()

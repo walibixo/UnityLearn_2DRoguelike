@@ -70,9 +70,8 @@ public class BoardManager : MonoBehaviour
             _height = _heightMin;
         }
 
-        _width += Random.Range(0, 3);
-        _height += Random.Range(0, 3);
-
+        _width = _widthMin + Random.Range(difficultyLevel - 1, difficultyLevel + 1);
+        _height = _heightMin + Random.Range(difficultyLevel - 1, difficultyLevel + 1);
 
         _cellsData = new CellData[_width, _height];
 
