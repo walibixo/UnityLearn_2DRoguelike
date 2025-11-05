@@ -52,13 +52,12 @@ public class GameManager : MonoBehaviour
 
     public void StartNewGame()
     {
-        _levelCount = 0;
-        _foodAmount = 0;
+        LoadSavedGameState();
         IsGameOver = false;
 
         _gameOverPanel.style.visibility = Visibility.Hidden;
 
-        UpdateFoodAmount(100);
+        UpdateFoodAmount();
 
         StartNewLevel();
     }
@@ -68,6 +67,8 @@ public class GameManager : MonoBehaviour
         ScreenTransition.HideScreen();
 
         _levelCount++;
+
+        SaveGameState();
 
         BoardManager.ClearBoard();
         BoardManager.GenerateBoard(_levelCount);
@@ -84,6 +85,8 @@ public class GameManager : MonoBehaviour
         IsGameOver = true;
         _gameOverPanel.style.visibility = Visibility.Visible;
         _gameOverLabel.text = "Game Over!\n\nYou traveled through " + _levelCount + " levels\n\nPress Space to start again";
+
+        ClearGameState();
     }
 
     private void OnNewTurn()
@@ -102,5 +105,24 @@ public class GameManager : MonoBehaviour
     {
         _foodAmount += relativeAmount;
         _foodLabel.text = "Food : " + _foodAmount;
+    }
+
+    private void SaveGameState()
+    {
+        PlayerPrefs.SetInt("LevelCount", _levelCount);
+        PlayerPrefs.SetInt("FoodAmount", _foodAmount);
+        PlayerPrefs.Save();
+    }
+
+    private void ClearGameState()
+    {
+        PlayerPrefs.DeleteKey("LevelCount");
+        PlayerPrefs.DeleteKey("FoodAmount");
+    }
+
+    private void LoadSavedGameState()
+    {
+        _levelCount = PlayerPrefs.GetInt("LevelCount", 0);
+        _foodAmount = PlayerPrefs.GetInt("FoodAmount", 100);
     }
 }
